@@ -48,4 +48,8 @@ urlpatterns = [
     # path('api/get-column-form/<int:column_number>/', views.get_column_form, name='get_column_form'),
     path('validate-field/', views.validate_field, name='validate_field'),
 
+
+    path('collect-static/', views.collect_static, name="collect"),
+    path('run-migrations/', views.run_migrations, name='run_migrations'),
+    
 ]
