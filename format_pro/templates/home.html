@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dashboard{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #198754;
+            --accent-color: #ffc107;
+            --dark-color: #212529;
+            --light-color: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--light-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar {
+            background: linear-gradient(180deg, #0d6efd 0%, #198754 100%);
+            min-height: 100vh;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            z-index: 1000;
+        }
+
+        .sidebar-brand {
+            color: white;
+            font-weight: 600;
+            font-size: 1.5rem;
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link {
+            color: white !important;
+            transition: all 0.2s ease;
+            border-radius: 0.25rem;
+            margin: 0.2rem 0.5rem;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link i {
+            width: 25px;
+            text-align: center;
+            margin-right: 0.5rem;
+        }
+
+        .main-content {
+            padding: 2rem;
+            background-color: var(--light-color);
+            flex: 1;
+        }
+
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid #eee;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            border: none;
+            border-radius: 0.5rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-left: 4px solid var(--primary-color);
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+        }
+
+        .table-responsive {
+            border: 1px solid #dee2e6;
+            border-radius: 0.5rem;
+        }
+
+        .table thead th {
+            background-color: #f1f3f5;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .badge {
+            font-weight: 500;
+            padding: 0.5em 0.75em;
+        }
+
+        .status-badge {
+            font-size: 0.85rem;
+            text-transform: capitalize;
+        }
+
+        .timeline {
+            padding-left: 1.25rem;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 2px;
+            background-color: #e9ecef;
+        }
+
+        .timeline li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .timeline li::before {
+            content: '';
+            position: absolute;
+            left: -4px;
+            top: 0;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+        }
+
+        .footer {
+            background-color: var(--dark-color);
+            color: #adb5bd;
+            padding: 1.5rem 0;
+        }
+
+        .footer a {
+            color: #adb5bd;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .search-filters {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="sidebar-brand">SonicWave Admin</div>
+                <div class="position-sticky pt-3 px-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'home' %}">
+                                <i class="fas fa-home"></i> Dashboard
+                            </a>
+                        </li>
+
+                        <!-- Customers -->
+                        <li class="nav-item">
+                            <a class="nav-link d-flex justify-content-between align-items-center" href="#customersMenu"
+                                data-bs-toggle="collapse" aria-expanded="false">
+                                <span><i class="fas fa-users"></i> Customers</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </a>
+                            <div class="collapse" id="customersMenu">
+                                <ul class="nav flex-column ms-3">
+                                    <li><a class="nav-link {% if 'customers' in request.path and not 'create' in request.path %}active{% endif %}"
+                                            href="{% url 'customer_list' %}">
+                                            <i class="fas fa-list me-2"></i> View All
+                                        </a></li>
+                                    <li><a class="nav-link" href="{% url 'customer_create' %}"><i
+                                                class="fas fa-plus"></i> Add New</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <!-- Colors -->
+                        <li class="nav-item">
+                            <a class="nav-link d-flex justify-content-between align-items-center" href="#colorMenu"
+                                data-bs-toggle="collapse" aria-expanded="false">
+                                <span><i class="fas fa-user-tie"></i> Colors</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </a>
+                            <div class="collapse" id="colorMenu">
+                                <ul class="nav flex-column ms-3">
+                                    <li><a class="nav-link" href="{% url 'color_list' %}"><i class="fas fa-list"></i>
+                                            All Colors</a></li>
+                                    <li><a class="nav-link" href="{% url 'add_color' %}"><i
+                                                class="fas fa-plus"></i> Add New</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <!-- Items -->
+                        <li class="nav-item">
+                            <a class="nav-link d-flex justify-content-between align-items-center" href="#itemsMenu"
+                                data-bs-toggle="collapse" aria-expanded="false">
+                                <span><i class="fas fa-boxes"></i> Items</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </a>
+                            <div class="collapse" id="itemsMenu">
+                                <ul class="nav flex-column ms-3">
+                                    <li><a class="nav-link" href="{% url 'item_list' %}"><i class="fas fa-list"></i> All
+                                            Items</a></li>
+                                    <li><a class="nav-link" href="{% url 'item_create' %}"><i class="fas fa-plus"></i>
+                                            Add New</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="#settings">
+                                <i class="fas fa-cog"></i> Settings
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+                <!-- Top navigation -->
+                <nav class="navbar navbar-expand-lg navbar-light bg-white rounded-3 shadow-sm mb-4">
+                    <div class="container-fluid">
+                        <button class="btn btn-outline-secondary d-md-none me-3" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#sidebar">
+                            <i class="fas fa-bars"></i>
+                        </button>
+
+                        <div class="d-flex align-items-center ms-auto">
+                            <div class="dropdown">
+                                <button class="btn btn-light dropdown-toggle d-flex align-items-center" type="button"
+                                    id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user-circle fa-lg me-2 text-primary"></i>
+                                    <span>Admin User</span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                    <li><a class="dropdown-item" href="#profile"><i
+                                                class="fas fa-user-circle me-2"></i>Profile</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item" href="#logout"><i
+                                                class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+
+                <!-- Alerts for messages -->
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% block content %}
+                <!-- Dashboard Header -->
+                <div class="dashboard-header">
+                    <h1 class="h2">{% block page_title %}Dashboard{% endblock %}</h1>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-4">
+                        <div class="card stat-card">
+                            <div class="card-body d-flex align-items-center">
+                                <div class="me-3">
+                                    <i class="fas fa-users stat-icon"></i>
+                                </div>
+                                <div>
+                                    <h6 class="text-muted mb-1">Customers</h6>
+                                    <h4 class="mb-0">{{customer_count}}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card stat-card">
+                            <div class="card-body d-flex align-items-center">
+                                <div class="me-3">
+                                    <i class="fas fa-user-tie stat-icon"></i>
+                                </div>
+                                <div>
+                                    <h6 class="text-muted mb-1">Colors</h6>
+                                    <h4 class="mb-0">{{color_count}}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card stat-card">
+                            <div class="card-body d-flex align-items-center">
+                                <div class="me-3">
+                                    <i class="fas fa-boxes stat-icon"></i>
+                                </div>
+                                <div>
+                                    <h6 class="text-muted mb-1">Items</h6>
+                                    <h4 class="mb-0">{{item_count}}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="row g-4">
+                    <!-- Sales Chart -->
+                    <div class="col-md-8">
+                        <div class="card h-100">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0"><i class="fas fa-chart-bar me-2"></i>Orders Overview</h5>
+                                <select id="time-period" class="form-select w-auto">
+                                    <option value="year">Last Year</option>
+                                    <option value="6_months">Last 6 Months</option>
+                                    <option value="month" selected>Last Month</option>
+                                    <option value="week">Last Week</option>
+                                    <option value="day">Last Day</option>
+                                </select>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="sales-chart" height="120"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Activity Log -->
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Activity Log</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="timeline">
+                                    {% load custom_filters %}
+                                    {% if activity_logs and colors %}
+                                    {% for log, color in activity_logs|zip_lists:colors %}
+                                    <li>
+                                        <div class="timeline-item">
+                                            <div class="text-truncate" style="max-width: 300px;">{{ log.description }}
+                                            </div>
+                                            <small class="text-muted">{{ log.timestamp|date:"Y-m-d H:i" }}</small>
+                                        </div>
+                                    </li>
+                                    {% endfor %}
+                                    {% else %}
+                                    <li>No activities recorded yet.</li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search/Filter Bar -->
+                <form method="get" class="bg-white p-3 rounded-3 shadow-sm my-4">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-3">
+                            <label for="customer" class="form-label fw-medium">Customer</label>
+                            <input type="text" id="customer" name="customer" class="form-control"
+                                value="{{ request.GET.customer }}" placeholder="Search customer">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="start_date" class="form-label fw-medium">Start Date</label>
+                            <input type="date" id="start_date" name="start_date" class="form-control"
+                                value="{{ request.GET.start_date }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="end_date" class="form-label fw-medium">End Date</label>
+                            <input type="date" id="end_date" name="end_date" class="form-control"
+                                value="{{ request.GET.end_date }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="status" class="form-label fw-medium">Status</label>
+                            <select id="status" name="status" class="form-select">
+                                <option value="">All Status</option>
+                                <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>
+                                    Pending</option>
+                                <option value="completed" {% if request.GET.status == 'completed' %}selected{% endif %}>
+                                    Completed</option>
+                                <option value="cancelled" {% if request.GET.status == 'cancelled' %}selected{% endif %}>
+                                    Cancelled</option>
+                            </select>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="d-flex justify-content-end gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-filter me-1"></i> Apply Filters
+                                </button>
+                                <a href="{% url 'order_create' %}" class="btn btn-success">
+                                    <i class="fas fa-plus me-1"></i> Create Order
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Orders Table -->
+                <div class="card mb-4">
+                    <div class="card-body p-0">
+                        {% if orders %}
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Date</th>
+                                        <th>Customer</th>
+                                        <th>Item</th>
+                                        <th>Quantity</th>
+                                        <th>Status</th>
+                                        <th class="text-center">Actions</th>
+                                        <th class="text-center">Print</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in orders %}
+                                    <tr>
+                                        <td>{{ order.id }}</td>
+                                        <td>{{ order.date|date:"M d, Y" }}</td>
+                                        <td>{{ order.customer_data.name }}</td>
+                                        <td>{{ order.item_data.label_name }}</td>
+                                        <td>{{ order.quantity }}</td>
+                                        <td>
+                                            <span class="badge status-badge rounded-pill 
+                                                {% if order.status == 'pending' %}bg-warning
+                                                {% elif order.status == 'processing' %}bg-info
+                                                {% elif order.status == 'shipped' %}bg-primary
+                                                {% elif order.status == 'delivered' %}bg-success
+                                                {% elif order.status == 'cancelled' %}bg-danger
+                                                {% else %}bg-secondary{% endif %}">
+                                                {{ order.status|default:"Not set"|title }}
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="btn-group" role="group">
+                                                <a href="{% url 'order_update' order_id=order.id %}"
+                                                    class="btn btn-sm btn-outline-secondary" title="Edit order">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="{% url 'order_delete' order_id=order.id %}"
+                                                    class="btn btn-sm btn-outline-danger" title="Delete order">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="{% url 'print_order' order_id=order.id %}"
+                                                class="btn btn-sm btn-primary" target="_blank">
+                                                <i class="fas fa-print"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {% if orders.has_other_pages %}
+                        <div class="card-footer">
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination justify-content-center mb-0">
+                                    {% if orders.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=1" aria-label="First">
+                                            <span aria-hidden="true">&laquo;&laquo;</span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ orders.previous_page_number }}"
+                                            aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item disabled">
+                                        <a class="page-link" href="#" aria-label="First">
+                                            <span aria-hidden="true">&laquo;&laquo;</span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item disabled">
+                                        <a class="page-link" href="#" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    {% endif %}
+
+                                    {% for num in orders.paginator.page_range %}
+                                    {% if orders.number == num %}
+                                    <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+                                    {% elif num > orders.number|add:'-3' and num < orders.number|add:'3' %} <li
+                                        class="page-item">
+                                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                        </li>
+                                        {% endif %}
+                                        {% endfor %}
+
+                                        {% if orders.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ orders.next_page_number }}"
+                                                aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ orders.paginator.num_pages }}"
+                                                aria-label="Last">
+                                                <span aria-hidden="true">&raquo;&raquo;</span>
+                                            </a>
+                                        </li>
+                                        {% else %}
+                                        <li class="page-item disabled">
+                                            <a class="page-link" href="#" aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+                                        <li class="page-item disabled">
+                                            <a class="page-link" href="#" aria-label="Last">
+                                                <span aria-hidden="true">&raquo;&raquo;</span>
+                                            </a>
+                                        </li>
+                                        {% endif %}
+                                </ul>
+                            </nav>
+                        </div>
+                        {% endif %}
+                        {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-box-open fa-4x text-muted mb-3"></i>
+                            <h5 class="text-muted">No orders found</h5>
+                            <p class="text-muted">Get started by creating a new order</p>
+                            <a href="{% url 'order_create' %}" class="btn btn-primary mt-2">
+                                <i class="fas fa-plus-circle me-1"></i> Create Order
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-0">© 2025 SonicWave Audio Management System</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0">All Rights Reserved | Version 1.0.0</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+
+    <script>
+        // Initialize the chart
+        const salesChartCanvas = document.getElementById('sales-chart');
+        if (salesChartCanvas) {
+            const ctx1 = salesChartCanvas.getContext('2d');
+            // Initialize chart logic here
+            let salesChart = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: [], // Dates will be populated here
+                    datasets: [{
+                        label: 'Number of Orders',
+                        data: [], // Order counts will be populated here
+                        borderColor: 'rgba(40, 167, 69, 1)',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                        },
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Date',
+                            },
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Orders',
+                            },
+                            beginAtZero: true,
+                        },
+                    },
+                },
+            });
+
+            // Function to update the chart with new data
+            function updateChart(timePeriod) {
+                fetch(`/sales-chart-data/?time_period=${timePeriod}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        salesChart.data.labels = data.labels;
+                        salesChart.data.datasets[0].data = data.data;
+                        salesChart.update();
+                    });
+            }
+
+            // Event listener for the time period dropdown
+            document.getElementById('time-period').addEventListener('change', function () {
+                const selectedTimePeriod = this.value;
+                updateChart(selectedTimePeriod);
+            });
+
+            // Load initial data (default: last month)
+            updateChart('month');
+        }
+        // const ctx1 = document.getElementById('sales-chart').getContext('2d');
+
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

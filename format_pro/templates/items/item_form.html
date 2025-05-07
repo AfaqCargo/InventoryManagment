@@ -1,0 +1,557 @@
+{% extends 'home.html' %}
+{% block title %}Create New Item{% endblock %}
+{% block page_title %}<i class="fas fa-boxes me-2"></i> Create New Item{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease;
+    }
+    .form-card:hover {
+        transform: translateY(-5px);
+    }
+    .form-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+        padding: 1.5rem 2rem;
+        border-radius: 15px 15px 0 0;
+    }
+    .form-title {
+        margin: 0;
+        font-weight: 700;
+        font-size: 1.4rem;
+        display: flex;
+        align-items: center;
+    }
+    .form-body {
+        padding: 2rem;
+    }
+    .form-label {
+        font-weight: 500;
+        color: var(--dark-color);
+        font-size: 0.95rem;
+    }
+    .form-control {
+        border-radius: 10px;
+        border: 1px solid #ced4da;
+        padding: 0.6rem 1rem;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+    }
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+    }
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        border: none;
+        border-radius: 30px;
+        padding: 0.6rem 2rem;
+        font-weight: 500;
+        box-shadow: 0 4px 15px rgba(13, 110, 253, 0.2);
+        transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(13, 110, 253, 0.3);
+    }
+    .btn-secondary {
+        background-color: var(--light-color);
+        color: var(--dark-color);
+        border: none;
+        border-radius: 30px;
+        padding: 0.6rem 2rem;
+        font-weight: 500;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .btn-secondary:hover {
+        background-color: #e9ecef;
+    }
+    .field-group {
+        margin-bottom: 1.5rem;
+    }
+    .form-icon {
+        font-size: 1.2rem;
+        margin-right: 10px;
+        color: var(--primary-color);
+    }
+    .help-card {
+        border: none;
+        border-radius: 15px;
+        background-color: var(--light-color);
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    }
+    .help-header {
+        background-color: rgba(13, 110, 253, 0.1);
+        color: var(--primary-color);
+        border-radius: 15px 15px 0 0;
+        padding: 1rem 1.5rem;
+    }
+    .help-title {
+        display: flex;
+        align-items: center;
+        font-weight: 600;
+        margin: 0;
+    }
+    .help-list li {
+        margin-bottom: 0.5rem;
+        position: relative;
+        padding-left: 1.5rem;
+    }
+    .help-list li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0.6rem;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+    }
+    .is-invalid {
+        border-color: #dc3545 !important;
+        padding-right: calc(1.5em + 0.75rem);
+        background-position: right calc(0.375em + 0.1875rem) center;
+    }
+    .is-valid {
+        border-color: #198754 !important;
+        padding-right: calc(1.5em + 0.75rem);
+        background-position: right calc(0.375em + 0.1875rem) center;
+    }
+    .error-message {
+        color: #dc3545;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+    }
+    .error-message i {
+        margin-right: 5px;
+    }
+    .columns-container {
+        background-color: var(--light-color);
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin: 1rem 0;
+    }
+    .column-section {
+        background-color: white;
+        border: 1px solid #e9ecef;
+        border-radius: 10px;
+        padding: 1rem;
+        margin: 0.5rem;
+    }
+    .row-input {
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Help section -->
+        <div class="col-lg-4 mb-4">
+            <div class="card help-card h-100">
+                <div class="help-header">
+                    <h6 class="help-title">
+                        <i class="fas fa-question-circle me-2"></i> Form Completion Guide
+                    </h6>
+                </div>
+                <div class="help-body">
+                    <p class="mb-3">All fields marked with * are required. Please ensure accuracy of information.</p>
+                    <ul class="help-list ps-3">
+                        <li><strong>Label Name:</strong> Unique name for your product label</li>
+                        <li><strong>Code:</strong> Product code must be unique</li>
+                        <li><strong>Machine:</strong> Type of printing machine used</li>
+                        <li><strong>Dimensions:</strong> Width and length in millimeters</li>
+                        <li><strong>Choices:</strong> Select the applicable pick value</li>
+                        <li><strong>Pick:</strong> Enter the pick count</li>
+                        <li><strong>Preselect:</strong> Optional preselection value</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Form section -->
+        <div class="col-lg-8 mb-4">
+            <div class="card form-card h-100">
+                <div class="form-header">
+                    <h5 class="form-title">
+                        <i class="fas fa-box-open me-2"></i> New Item Creation
+                    </h5>
+                </div>
+                <div class="form-body">
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    <form method="post" enctype="multipart/form-data" novalidate id="itemForm" class="row g-4"
+                          {% if item.id %} data-item-id="{{ item.id }}" {% endif %}>
+                        {% csrf_token %}
+                        <!-- Left Column -->
+                        <div class="col-md-6">
+                            <div class="field-group">
+                                <label for="{{ form.label_name.id_for_label }}" class="form-label">
+                                    <i class="fas fa-tag form-icon"></i> Label Name *
+                                </label>
+                                {{ form.label_name }}
+                                {% if form.label_name.errors %}
+                                <div class="error-message">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    {% for error in form.label_name.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="field-group">
+                                <label for="{{ form.code.id_for_label }}" class="form-label">
+                                    <i class="fas fa-barcode form-icon"></i> Code *
+                                </label>
+                                {{ form.code }}
+                                {% if form.code.errors %}
+                                <div class="error-message">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    {% for error in form.code.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="field-group">
+                                <label for="{{ form.date.id_for_label }}" class="form-label">
+                                    <i class="fas fa-calendar-alt form-icon"></i> Date
+                                </label>
+                                {{ form.date }}
+                                {% if form.date.errors %}
+                                <div class="error-message">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    {% for error in form.date.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="field-group">
+                                <label for="{{ form.customer.id_for_label }}" class="form-label">
+                                    <i class="fas fa-user form-icon"></i> Customer *
+                                </label>
+                                {{ form.customer }}
+                                {% if form.customer.errors %}
+                                <div class="error-message">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    {% for error in form.customer.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="field-group">
+                                <label for="{{ form.quantity.id_for_label }}" class="form-label">
+                                    <i class="fas fa-columns form-icon"></i> Quantity *
+                                </label>
+                                {{ form.quantity }}
+                                {% if form.quantity.errors %}
+                                <div class="error-message">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    {% for error in form.quantity.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="field-group">
+                                <label for="{{ form.label_image.id_for_label }}" class="form-label">
+                                    <i class="fas fa-image form-icon"></i> Label Image
+                                </label>
+                                {{ form.label_image }}
+                                {% if form.label_image.errors %}
+                                <div class="error-message">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    {% for error in form.label_image.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="field-group">
+                                <label for="{{ form.preselect.id_for_label }}" class="form-label">
+                                    <i class="fas fa-check-circle form-icon"></i> Preselect
+                                </label>
+                                {{ form.preselect }}
+                                {% if form.preselect.errors %}
+                                <div class="error-message">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    {% for error in form.preselect.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!-- Right Column -->
+                        <div class="col-md-6">
+                            <div class="field-group">
+                                <label for="{{ form.machine.id_for_label }}" class="form-label">
+                                    <i class="fas fa-cogs form-icon"></i> Machine *
+                                </label>
+                                {{ form.machine }}
+                                {% if form.machine.errors %}
+                                <div class="error-message">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    {% for error in form.machine.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="field-group">
+                                <label for="{{ form.density.id_for_label }}" class="form-label">
+                                    <i class="fas fa-weight form-icon"></i> Density *
+                                </label>
+                                {{ form.density }}
+                                {% if form.density.errors %}
+                                <div class="error-message">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    {% for error in form.density.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="field-group">
+                                <label for="{{ form.width.id_for_label }}" class="form-label">
+                                    <i class="fas fa-ruler-horizontal form-icon"></i> Dimensions * 
+                                    <small class="form-text text-muted mx-5">Width × Length (mm)</small>
+                                </label>
+                                <div class="d-flex gap-2">
+                                    <div class="flex-grow-1">
+                                        {{ form.width }}
+                                        {% if form.width.errors %}
+                                        <div class="error-message">
+                                            <i class="fas fa-exclamation-circle"></i>
+                                            {% for error in form.width.errors %}
+                                            {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        {{ form.length }}
+                                        {% if form.length.errors %}
+                                        <div class="error-message">
+                                            <i class="fas fa-exclamation-circle"></i>
+                                            {% for error in form.length.errors %}
+                                            {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="field-group">
+                                <label for="{{ form.column_count.id_for_label }}" class="form-label">
+                                    <i class="fas fa-columns form-icon"></i> Column Count *
+                                </label>
+                                {{ form.column_count }}
+                                {% if form.column_count.errors %}
+                                <div class="error-message">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    {% for error in form.column_count.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="field-group">
+                                <label for="{{ form.fold_method.id_for_label }}" class="form-label">
+                                    <i class="fas fa-folder-open form-icon"></i> Fold Method *
+                                </label>
+                                {{ form.fold_method }}
+                                {% if form.fold_method.errors %}
+                                <div class="error-message">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    {% for error in form.fold_method.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="field-group">
+                                <label for="{{ form.choices.id_for_label }}" class="form-label">
+                                    <i class="fas fa-list form-icon"></i> Choices *
+                                </label>
+                                {{ form.choices }}
+                                {% if form.choices.errors %}
+                                <div class="error-message">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    {% for error in form.choices.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="field-group">
+                                <label for="{{ form.pick.id_for_label }}" class="form-label">
+                                    <i class="fas fa-hashtag form-icon"></i> Pick *
+                                </label>
+                                {{ form.pick }}
+                                {% if form.pick.errors %}
+                                <div class="error-message">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    {% for error in form.pick.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!-- Dynamic Columns Section -->
+                        <div class="col-md-12">
+                            <h4 class="mb-3">Column Details</h4>
+                            <div class="columns-container" id="columns-container">
+                                <div class="text-center py-5">
+                                    <i class="fas fa-columns fa-2x text-muted mb-3"></i>
+                                    <p class="mb-0">Column details will appear here once you select a column count above</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Action buttons -->
+                        <div class="col-md-12 mt-3">
+                            <div class="d-flex gap-3 justify-content-end">
+                                <a href="{% url 'item_list' %}" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i> Back to List
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i> Save Item
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Initialize form validation
+        function initializeValidation() {
+            $('.form-control').each(function () {
+                const field = $(this);
+                field.on('input', function () {
+                    validateField(this);
+                });
+                field.on('blur', function () {
+                    if (field.val()) {
+                        validateField(this);
+                    }
+                });
+            });
+        }
+
+        function validateField(field) {
+            const fieldElement = $(field);
+            const feedbackEl = fieldElement.closest('.field-group').find('.error-message');
+            if (fieldElement.val()) {
+                fieldElement.removeClass('is-invalid').addClass('is-valid');
+                feedbackEl.addClass('d-none');
+            } else {
+                fieldElement.removeClass('is-valid').addClass('is-invalid');
+                feedbackEl.removeClass('d-none');
+            }
+        }
+
+        // Handle column count change
+        $('#id_column_count').on('change', function () {
+            const numColumns = $(this).val();
+            const columnsContainer = $('#columns-container');
+            columnsContainer.empty();
+            if (!numColumns || numColumns <= 0) {
+                columnsContainer.html(`
+                    <div class="text-center py-5">
+                        <i class="fas fa-columns fa-2x text-muted mb-3"></i>
+                        <p class="mb-0">Please enter a valid column count above</p>
+                    </div>
+                `);
+                return;
+            }
+            const container = $('<div>', {
+                'class': 'row'
+            });
+            for (let i = 0; i < numColumns; i++) {
+                const columnDiv = $('<div>', {
+                    'class': 'col-md-6 col-lg-3 mb-4'
+                });
+                columnDiv.append(`
+                    <div class="column-section">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0">Column ${i + 1}</h5>
+                            <span class="badge bg-primary">${i + 1}</span>
+                        </div>
+                        <div class="field-group">
+                            <label for="id_column_${i}-column_name" class="form-label">Column Name</label>
+                            <input type="text" name="column_${i}-column_name" id="id_column_${i}-column_name" 
+                                   class="form-control" placeholder="Enter column name" required>
+                            <div class="error-message d-none">
+                                <i class="fas fa-exclamation-circle"></i> Please provide a column name
+                            </div>
+                        </div>
+                        <div class="field-group">
+                            <label class="form-label">Column Rows</label>
+                            <div class="rows-container">
+                                ${Array(4).fill().map((_, j) => `
+                                    <div class="row-input mb-2">
+                                        <input type="text" name="column_${i}_row_${j}-value" 
+                                               id="id_column_${i}_row_${j}-value"
+                                               class="form-control" 
+                                               placeholder="${j === 0 ? 'Color Name' : j === 1 ? 'DTEX' : j === 2 ? 'Color Number' : 'Color Pick'}"
+                                               required>
+                                        <div class="error-message d-none">
+                                            <i class="fas fa-exclamation-circle"></i> Please provide a value
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `);
+                container.append(columnDiv);
+            }
+            columnsContainer.append(container);
+            initializeValidation();
+        });
+
+        $('#itemForm').on('submit', function (e) {
+            let isValid = true;
+            $('.form-control').each(function () {
+                if ($(this).prop('required') && !$(this).val()) {
+                    $(this).removeClass('is-valid').addClass('is-invalid');
+                    isValid = false;
+                }
+            });
+            if (!isValid) {
+                e.preventDefault();
+                const firstError = $('.is-invalid').first();
+                if (firstError.length) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstError.focus();
+                }
+            }
+        });
+
+        initializeValidation();
+    });
+</script>
+{% endblock %}

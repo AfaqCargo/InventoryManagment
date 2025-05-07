@@ -1,0 +1,180 @@
+{% extends 'home.html' %}
+{% load static %}
+
+{% block title %}Customer List{% endblock %}
+
+{% block page_title %}<i class="fas fa-users me-2"></i> Customer Management{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Action Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h3">Customer List</h2>
+        <a href="{% url 'customer_create' %}" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i> Add New Customer
+        </a>
+    </div>
+    
+    <!-- Search Filters -->
+    <div class="card mb-4 border-0 shadow-sm">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label fw-medium">Customer Name</label>
+                    <input type="text" name="name" class="form-control" value="{{ request.GET.name|default:'' }}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label fw-medium">Phone Number</label>
+                    <input type="text" name="phone" class="form-control" value="{{ request.GET.phone|default:'' }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-medium">Email Address</label>
+                    <input type="text" name="email" class="form-control" value="{{ request.GET.email|default:'' }}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label fw-medium">City</label>
+                    <input type="text" name="city" class="form-control" value="{{ request.GET.city|default:'' }}">
+                </div>
+                <div class="col-md-2 align-self-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search me-1"></i> Search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Active Filters -->
+    {% if request.GET.name or request.GET.phone or request.GET.email or request.GET.address %}
+    <div class="alert alert-info d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <strong>Active filters:</strong>
+            {% if request.GET.name %}<span class="badge bg-light text-dark me-2">Name: {{ request.GET.name }}</span>{% endif %}
+            {% if request.GET.phone %}<span class="badge bg-light text-dark me-2">Phone: {{ request.GET.phone }}</span>{% endif %}
+            {% if request.GET.email %}<span class="badge bg-light text-dark me-2">Email: {{ request.GET.email }}</span>{% endif %}
+            {% if request.GET.city %}<span class="badge bg-light text-dark me-2">City: {{ request.GET.city }}</span>{% endif %}
+        </div>
+        <a href="{% url 'customer_list' %}" class="btn btn-sm btn-outline-secondary">
+            <i class="fas fa-times me-1"></i> Clear Filters
+        </a>
+    </div>
+    {% endif %}
+    
+    <!-- Customer Table -->
+    {% if customers %}
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">#</th>
+                            <th>Customer Name</th>
+                            <th>Phone</th>
+                            <th>City</th>
+                            <th>Email</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for customer in customers %}
+                        <tr>
+                            <td class="ps-4">{{ forloop.counter }}</td>
+                            <td>{{ customer.name }}</td>
+                            <td>{{ customer.phone }}</td>
+                            <td>{{ customer.city|default:"-" }}</td>
+                            <td>{{ customer.email }}</td>
+                            <td class="text-center">
+                                <div class="btn-group" role="group">
+                                    <a href="{% url 'customer_detail' customer.id %}" 
+                                       class="btn btn-sm btn-outline-secondary" 
+                                       title="View Details">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{% url 'customer_edit' customer.id %}" 
+                                       class="btn btn-sm btn-outline-warning" 
+                                       title="Edit Customer">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{% url 'customer_delete' customer.id %}" 
+                                       class="btn btn-sm btn-outline-danger" 
+                                       title="Delete Customer">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1{% if request.GET.name %}&name={{ request.GET.name }}{% endif %}{% if request.GET.phone %}&phone={{ request.GET.phone }}{% endif %}{% if request.GET.email %}&email={{ request.GET.email }}{% endif %}{% if request.GET.city %}&city={{ request.GET.city }}{% endif %}">
+                    <i class="fas fa-angle-double-left"></i>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.name %}&name={{ request.GET.name }}{% endif %}{% if request.GET.phone %}&phone={{ request.GET.phone }}{% endif %}{% if request.GET.email %}&email={{ request.GET.email }}{% endif %}{% if request.GET.city %}&city={{ request.GET.city }}{% endif %}">
+                    <i class="fas fa-angle-left"></i>
+                </a>
+            </li>
+            {% endif %}
+            
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active" aria-current="page">
+                    <span class="page-link">{{ num }}</span>
+                </li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}{% if request.GET.name %}&name={{ request.GET.name }}{% endif %}{% if request.GET.phone %}&phone={{ request.GET.phone }}{% endif %}{% if request.GET.email %}&email={{ request.GET.email }}{% endif %}{% if request.GET.city %}&city={{ request.GET.city }}{% endif %}">{{ num }}</a>
+                </li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.name %}&name={{ request.GET.name }}{% endif %}{% if request.GET.phone %}&phone={{ request.GET.phone }}{% endif %}{% if request.GET.email %}&email={{ request.GET.email }}{% endif %}{% if request.GET.city %}&city={{ request.GET.city }}{% endif %}">
+                    <i class="fas fa-angle-right"></i>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.name %}&name={{ request.GET.name }}{% endif %}{% if request.GET.phone %}&phone={{ request.GET.phone }}{% endif %}{% if request.GET.email %}&email={{ request.GET.email }}{% endif %}{% if request.GET.city %}&city={{ request.GET.city }}{% endif %}">
+                    <i class="fas fa-angle-double-right"></i>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+    
+    <!-- Empty State -->
+    {% else %}
+    <div class="card border-0 shadow-sm text-center py-5">
+        <div class="card-body">
+            <i class="fas fa-users fa-4x text-muted mb-3"></i>
+            <h4 class="mb-3">No customers found</h4>
+            {% if request.GET.name or request.GET.phone or request.GET.email or request.GET.city %}
+                <p class="text-muted mb-4">No customers match your search criteria.<br>Try different search terms or reset filters.</p>
+                <a href="{% url 'customer_list' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-redo me-1"></i> Reset Search
+                </a>
+            {% else %}
+                <p class="text-muted mb-4">There are no customers in the system yet.</p>
+                <a href="{% url 'customer_create' %}" class="btn btn-primary">
+                    <i class="fas fa-plus me-1"></i> Add First Customer
+                </a>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

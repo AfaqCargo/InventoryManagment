@@ -1,0 +1,192 @@
+{% extends 'home.html' %}
+{% block title %}Color Records List{% endblock %}
+{% block page_title %}
+    <i class="fas fa-palette me-2"></i> Color Records Management
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .filter-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        background-color: white;
+        margin-bottom: 1.5rem;
+    }
+    
+    .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .color-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        background-color: white;
+    }
+
+    .color-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .color-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 15px 15px 0 0;
+    }
+
+    .color-title {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    .color-body {
+        padding: 1rem 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    .color-body .row > div {
+        margin-bottom: 0.6rem;
+    }
+
+    .btn-floating {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        z-index: 1000;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .no-records {
+        text-align: center;
+        padding: 3rem;
+        color: var(--muted-color);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Filter Section -->
+        <div class="col-lg-12 mb-4">
+            <div class="card filter-card">
+                <div class="card-body">
+                    <form method="get" action="{% url 'color_list' %}">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label for="color_name" class="form-label">Color Name</label>
+                                <input type="text" name="color_name" id="color_name" class="form-control" 
+                                       value="{{ request.GET.color_name }}" placeholder="Search by name">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="color_number" class="form-label">Color Number</label>
+                                <input type="text" name="color_number" id="color_number" class="form-control"
+                                       value="{{ request.GET.color_number }}" placeholder="Search by number">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="color_dtex" class="form-label">DTEX</label>
+                                <input type="number" name="color_dtex" id="color_dtex" class="form-control"
+                                       value="{{ request.GET.color_dtex }}" placeholder="Search by DTEX">
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <div class="d-grid gap-2 w-100">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-filter me-2"></i> Apply Filters
+                                    </button>
+                                    <a href="{% url 'color_list' %}" class="btn btn-outline-secondary">
+                                        <i class="fas fa-times-circle me-2"></i> Clear Filters
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Colors List Section -->
+        <div class="col-lg-12 mb-4">
+            <div class="card form-card h-100">
+                <div class="form-header d-flex justify-content-between align-items-center">
+                    <h5 class="form-title m-3">
+                        <i class="fas fa-palette me-2"></i> Color Inventory
+                    </h5>
+                    <a href="{% url 'add_color' %}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i> Add New Color
+                    </a>
+                </div>
+                <div class="form-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if color_records %}
+                        <div class="card-grid">
+                            {% for record in color_records %}
+                                <div class="color-card">
+                                    <a href="{% url 'color_detail' record.pk %}" class="text-decoration-none text-dark">
+                                        <div class="color-header">
+                                            <h6 class="color-title">{{ record.color_name }}</h6>
+                                        </div>
+                                        <div class="color-body">
+                                            <div class="row">
+                                                <div class="col-6"><strong>DTEX:</strong></div>
+                                                <div class="col-6">{{ record.color_dtex }}</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6"><strong>Color #:</strong></div>
+                                                <div class="col-6">{{ record.color_number }}</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6"><strong>Rack:</strong></div>
+                                                <div class="col-6">{{ record.rack_no }}</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6"><strong>Stock:</strong></div>
+                                                <div class="col-6">{{ record.stock_kg }} kg</div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="no-records">
+                            <i class="fas fa-palette fa-3x text-muted mb-3"></i>
+                            <h5>No color records found</h5>
+                            <p class="text-muted">Try adjusting your search criteria or click "Add New Color"</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Floating Add Button -->
+<a href="{% url 'add_color' %}" class="btn btn-primary btn-floating rounded-circle" title="Add New Color">
+    <i class="fas fa-plus fa-lg"></i>
+</a>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Optional: Add smooth scroll behavior for floating button
+    document.querySelector('.btn-floating')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+</script>
+{% endblock %}

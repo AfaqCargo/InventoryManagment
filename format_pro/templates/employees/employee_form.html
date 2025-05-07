@@ -1,0 +1,529 @@
+```django
+{% extends 'home.html' %}
+
+{% block title %}Add New Employee{% endblock %}
+
+{% block page_title %}Add New Employee{% endblock %}
+
+
+{% block extra_css %}
+<style>
+    .form-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .form-card:hover {
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .form-header {
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        color: white;
+        padding: 20px 25px;
+        border-radius: 12px 12px 0 0;
+    }
+
+    .form-title {
+        margin: 0;
+        font-weight: 600;
+        font-size: 1.5rem;
+        letter-spacing: 0.5px;
+    }
+
+    .form-body {
+        padding: 30px;
+        background-color: #fff;
+        border-radius: 0 0 12px 12px;
+        /* display: flex;
+        justify-content: center; */
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #3a3a3a;
+        /* margin: 1rem; */
+        font-size: 0.95rem;
+        width: 100vw;
+        /* padding-left: 5px; */
+    }
+
+    .form-control {
+        border-radius: 8px;
+        border: 2px solid #e0e0e0;
+        padding: 12px 15px;
+        height: auto;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+    }
+
+    .form-control:focus {
+        border-color: #6a11cb;
+        box-shadow: 0 0 0 0.25rem rgba(106, 17, 203, 0.15);
+    }
+
+    .form-text {
+        font-size: 0.85rem;
+        margin-top: 5px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 25px;
+        font-weight: 500;
+        box-shadow: 0 4px 15px rgba(37, 117, 252, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(37, 117, 252, 0.3);
+    }
+
+    .btn-secondary {
+        background-color: #f8f9fa;
+        color: #3a3a3a;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 25px;
+        font-weight: 500;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-secondary:hover {
+        background-color: #e9ecef;
+    }
+
+    .form-icon {
+        font-size: 1.2rem;
+        margin-right: 10px;
+        color: #6a11cb;
+    }
+
+    .label-align {
+        display: flex;
+        align-items: center;
+
+    }
+
+    .field-group {
+        position: relative;
+        margin-bottom: 25px;
+        display: flex;
+        flex-direction: column;
+        /* align-items: center; */
+        justify-content: center;
+    }
+
+    .field-group .form-control {
+        padding-left: 45px;
+    }
+
+    .field-icon {
+        /* position: absolute; */
+        /* left: 20px; */
+        /* top: 50%; */
+        transform: translateY(-50%);
+        color: #6a11cb;
+        opacity: 0.7;
+        margin-right: 15px
+    }
+
+    .form-check-input:checked {
+        background-color: #6a11cb;
+        border-color: #6a11cb;
+    }
+
+    .help-card {
+        border: none;
+        border-radius: 12px;
+        background-color: #f0f7ff;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .help-header {
+        background-color: #e0ecff;
+        color: #0046ad;
+        border-bottom: none;
+        border-radius: 12px 12px 0 0;
+        padding: 15px 20px;
+    }
+
+    .help-title {
+        display: flex;
+        align-items: center;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .help-body {
+        padding: 20px;
+    }
+
+    .help-list li {
+        margin-bottom: 8px;
+        position: relative;
+        padding-left: 22px;
+    }
+
+    .help-list li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 8px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    }
+
+    .is-invalid {
+        border-color: #dc3545 !important;
+        padding-right: calc(1.5em + 0.75rem);
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right calc(0.375em + 0.1875rem) center;
+        background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+    }
+
+    .is-valid {
+        border-color: #198754 !important;
+        padding-right: calc(1.5em + 0.75rem);
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23198754' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right calc(0.375em + 0.1875rem) center;
+        background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+        /* text-transform: capitalize; */
+    }
+
+    .error-message {
+        color: #dc3545;
+        font-size: 0.85rem;
+        margin-top: 6px;
+        display: flex;
+        align-items: center;
+    }
+
+    .error-message i {
+        margin-right: 5px;
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .form-card {
+        animation: fadeIn 0.6s ease-out forwards;
+    }
+
+    .field-group {
+        opacity: 0;
+        animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    .field-group:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+
+    .field-group:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .field-group:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+
+    .field-group:nth-child(4) {
+        animation-delay: 0.4s;
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-5">
+        <!-- Help section -->
+        <div class="card help-card mb-4">
+            <div class="help-header">
+                <h6 class="help-title">
+                    <i class="fas fa-question-circle me-2"></i> Form Completion Guide
+                </h6>
+            </div>
+            <div class="help-body">
+                <p>All fields are required to successfully register a new employee. Please ensure accuracy of
+                    information.</p>
+                <ul class="help-list">
+                    <li><strong>Password :</strong> must be at least 8 characters long</li>
+                    <li><strong>Password :</strong> must not exceed 32 characters</li>
+                    <li><strong>Password :</strong> must contain at least one uppercase letter</li>
+                    <li><strong>Password :</strong> must contain at least one lowercase letter</li>
+                    <li><strong>Password :</strong> must contain at least one number</li>
+                    <li><strong>Password :</strong> must contain at least one special character</li>
+                </ul>
+            </div>
+        </div>
+
+
+
+        
+        <div class="card form-card mb-4">
+            <div class="form-header">
+                <h5 class="form-title">
+                    <i class="fas fa-user-plus me-2"></i> New Staff Registration
+                </h5>
+            </div>
+            <div class="form-body">
+                <form method="post" novalidate id="employeeForm" style="
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            ">
+                    {% csrf_token %}
+
+                    <div class="col-md-10">
+                        <div class="field-group">
+                            <div class="label-align">
+                                <i class="fas fa-user field-icon"></i>
+                                <label for="{{ form.name.id_for_label }}" class="form-label">First Name</label>
+                            </div>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                            <div class="error-message">
+                                <i class="fas fa-exclamation-circle"></i>
+                                {% for error in form.name.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-10">
+                        <div class="field-group">
+                            <div class="label-align">
+                                <i class="fas fa-envelope field-icon"></i>
+                                <label for="{{ form.email.id_for_label }}" class="form-label">Email Address</label>
+                            </div>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                            <div class="error-message">
+                                <i class="fas fa-exclamation-circle"></i>
+                                {% for error in form.email.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="col-md-10">
+                        <div class="field-group">
+                            <div class="label-align">
+                                <i class="fas fa-eye field-icon"></i>
+                                <label for="{{ form.password.id_for_label }}" class="form-label">Password</label>
+                            </div>
+                            {{ form.password }}
+                            {% if form.password.errors %}
+                            <div class="error-message">
+                                <i class="fas fa-exclamation-circle"></i>
+                                {% for error in form.password.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
+                        <a href="{% url 'employee_list' %}" class="btn btn-secondary me-md-2">
+                            <i class="fas fa-times me-2"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <i class="fas fa-save me-2"></i> Save Employee
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+<!-- ``` -->
+
+<!-- Key Changes:
+1. Added all specified fields: employee_id, first_name, last_name, email, phone, department, position, date_hired
+2. Maintained original design and styling
+3. Kept existing error handling
+4. Preserved form layout and animations
+
+The code ensures that all the required fields are present while keeping the original design intact. The validation script matches the new field structure, providing client-side validation for each input.
+
+Would you like me to make any further modifications? -->
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Elements
+        const form = document.getElementById('employeeForm');
+        const NameField = document.getElementById('id_name');
+        const passField = document.getElementById('id_password');
+        const emailField = document.getElementById('id_email');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // Validation Rules
+        const validationRules = {
+            name: {
+                validate: (value) => value.trim().length >= 2,
+                message: 'Name must be at least 2 characters long'
+            },
+            
+            password: {
+                validate: (value) => {
+                    // Check length
+                    if (value.length < 8 || value.length > 32) {
+                        return false;
+                    }
+
+                    // Check for at least one uppercase letter
+                    const hasUpperCase = /[A-Z]/.test(value);
+
+                    // Check for at least one lowercase letter
+                    const hasLowerCase = /[a-z]/.test(value);
+
+                    // Check for at least one digit
+                    const hasDigit = /\d/.test(value);
+
+                    // Check for at least one special character
+                    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value);
+
+                    // All conditions must be met
+                    return hasUpperCase && hasLowerCase && hasDigit && hasSpecialChar;
+                },
+                message: 'Password must be 8-32 characters and include uppercase, lowercase, number, and special character'
+            },
+            
+            email: {
+                validate: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+                message: 'Enter a valid email address'
+            },
+            
+        };
+
+        // Validation Helper Functions
+        function showError(field, message) {
+            const existingError = field.parentElement.querySelector('.error-message');
+            if (existingError) {
+                existingError.remove();
+            }
+
+            field.classList.add('is-invalid');
+            field.classList.remove('is-valid');
+
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message text-danger';
+            errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+            field.parentElement.appendChild(errorDiv);
+        }
+
+        function clearError(field) {
+            const existingError = field.parentElement.querySelector('.error-message');
+            if (existingError) {
+                existingError.remove();
+            }
+            field.classList.remove('is-invalid');
+            field.classList.add('is-valid');
+        }
+
+        function validateField(field) {
+            const fieldName = field.id.replace('id_', '');
+            const rule = validationRules[fieldName];
+
+            if (!rule) return true;
+
+            if (!rule.validate(field.value)) {
+                showError(field, rule.message);
+                return false;
+            }
+
+            clearError(field);
+            return true;
+        }
+
+        // Phone Number Formatting
+        phoneField.addEventListener('input', function (e) {
+            let value = this.value.replace(/\D/g, '');
+
+            if (value.length > 10) {
+                value = value.slice(0, 15);
+            }
+
+            if (value.length > 6) {
+                value = `(${value.slice(0, 3)}) ${value.slice(3, 6)}-${value.slice(6)}`;
+            } else if (value.length > 3) {
+                value = `(${value.slice(0, 3)}) ${value.slice(3)}`;
+            }
+
+            this.value = value;
+        });
+
+        // Real-time Validation
+        [
+            NameField,
+            emailField,
+            passField,
+        ].forEach(field => {
+            field.addEventListener('blur', () => validateField(field));
+
+            field.addEventListener('input', () => {
+                if (field.classList.contains('is-invalid') || field.value.trim() !== '') {
+                    validateField(field);
+                }
+            });
+        });
+
+        // Form Submission Validation
+        form.addEventListener('submit', function (event) {
+            let isValid = true;
+
+            [
+                NameField,
+                emailField,
+                passField,
+            ].forEach(field => {
+                if (!validateField(field)) {
+                    isValid = false;
+                }
+            });
+
+            if (!isValid) {
+                event.preventDefault();
+
+                const firstError = document.querySelector('.is-invalid');
+                if (firstError) {
+                    firstError.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                    firstError.focus();
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

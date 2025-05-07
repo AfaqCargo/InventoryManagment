@@ -1,0 +1,138 @@
+{% extends 'home.html' %}
+{% block title %}Color Details - {{ color.color_name }}{% endblock %}
+{% block page_title %}
+    <i class="fas fa-palette me-2"></i> Color Details: {{ color.color_name }}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stats-card {
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .label-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        margin-bottom: 1rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .label-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .label-header {
+        background: var(--light-color);
+        padding: 1rem 1.5rem;
+        border-radius: 10px 10px 0 0;
+    }
+
+    .label-body {
+        padding: 1rem 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    .no-labels {
+        text-align: center;
+        padding: 3rem;
+        color: var(--muted-color);
+    }
+
+    .thread-badge {
+        float: right;
+        font-size: 0.75rem;
+        padding: 0.3rem 0.6rem;
+        border-radius: 5px;
+        background-color: #e9ecef;
+        color: #495057;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Color Info -->
+        <div class="col-lg-4 mb-4">
+            <div class="card stats-card h-100">
+                <h5>{{ color.color_name }}</h5>
+                <hr>
+                <div class="mb-3">
+                    <strong>DTEX:</strong> {{ color.color_dtex }}
+                </div>
+                <div class="mb-3">
+                    <strong>Color Number:</strong> {{ color.color_number }}
+                </div>
+                <div class="mb-3">
+                    <strong>Rack:</strong> {{ color.rack_no }}
+                </div>
+                <div class="mb-3">
+                    <strong>Stock:</strong> {{ color.stock_kg|floatformat:3 }} kg
+                </div>
+                <div class="mb-3">
+                    <strong>Total Used:</strong> {{ total_used|floatformat:3 }} kg
+                </div>
+            </div>
+        </div>
+
+        <!-- Labels Using This Color -->
+        <div class="col-lg-8 mb-4">
+            <div class="card form-card h-100">
+                <div class="form-header d-flex justify-content-between align-items-center">
+                    <h5 class="form-title mb-0">
+                        <i class="fas fa-box-open me-2"></i> Labels Using This Color
+                    </h5>
+                    <a href="{% url 'color_list' %}" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-arrow-left me-2"></i> Back to List
+                    </a>
+                </div>
+                <div class="form-body">
+                    {% if used_labels %}
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Label Date</th>
+                                        <th>Label Name</th>
+                                        <th>Customer</th>
+                                        <th>Code</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in used_labels %}
+                                        <tr>
+                                            <td>{{ item.date }}</td>
+                                            <td>{{ item.label_name }}</td>
+                                            <td>{{ item.customer.name }}</td>
+                                            <td>{{ item.code }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    <tr class="table-secondary">
+                                        <td colspan="3" class="text-end fw-bold">Total Thread Used</td>
+                                        <td class="text-end fw-bold">{{ total_used|floatformat:3 }} kg</td>
+                                    </tr>
+                                    <tr class="table-secondary">
+                                        <td colspan="3" class="text-end fw-bold">Remaining Stock</td>
+                                        <td class="text-end fw-bold">{{ remaining|floatformat:3 }} kg</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="no-labels">
+                            <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                            <h5>This color is not currently used in any label</h5>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

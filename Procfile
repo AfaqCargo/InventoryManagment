@@ -1,0 +1,1 @@
+web: gunicorn format_pro.wsgi --bind 0.0.0.0:$PORT

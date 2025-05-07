@@ -1,0 +1,240 @@
+{% extends 'home.html' %}
+{% block title %}Add New Color Record{% endblock %}
+{% block page_title %}<i class="fas fa-palette me-2"></i> Add Color Record{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease;
+    }
+    .form-card:hover {
+        transform: translateY(-5px);
+    }
+    .form-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+        padding: 1.5rem 2rem;
+        border-radius: 15px 15px 0 0;
+    }
+    .form-title {
+        margin: 0;
+        font-weight: 700;
+        font-size: 1.4rem;
+        display: flex;
+        align-items: center;
+    }
+    .form-body {
+        padding: 2rem;
+    }
+    .form-label {
+        font-weight: 500;
+        color: var(--dark-color);
+        font-size: 0.95rem;
+    }
+    .form-control {
+        border-radius: 10px;
+        border: 1px solid #ced4da;
+        padding: 0.6rem 1rem;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+    }
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+    }
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        border: none;
+        border-radius: 30px;
+        padding: 0.6rem 2rem;
+        font-weight: 500;
+        box-shadow: 0 4px 15px rgba(13, 110, 253, 0.2);
+        transition: all 0.3s ease;
+    }
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(13, 110, 253, 0.3);
+    }
+    .btn-secondary {
+        background-color: var(--light-color);
+        color: var(--dark-color);
+        border: none;
+        border-radius: 30px;
+        padding: 0.6rem 2rem;
+        font-weight: 500;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .btn-secondary:hover {
+        background-color: #e9ecef;
+    }
+    .field-group {
+        margin-bottom: 1.5rem;
+    }
+    .form-icon {
+        font-size: 1.2rem;
+        margin-right: 10px;
+        color: var(--primary-color);
+    }
+    .is-invalid {
+        border-color: #dc3545 !important;
+        padding-right: calc(1.5em + 0.75rem);
+        background-position: right calc(0.375em + 0.1875rem) center;
+    }
+    .is-valid {
+        border-color: #198754 !important;
+        padding-right: calc(1.5em + 0.75rem);
+        background-position: right calc(0.375em + 0.1875rem) center;
+    }
+    .error-message {
+        color: #dc3545;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        display: flex;
+        align-items: center;
+    }
+    .error-message i {
+        margin-right: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Help section -->
+        <div class="col-lg-4 mb-4">
+            <div class="card help-card h-100">
+                <div class="help-header">
+                    <h6 class="help-title">
+                        <i class="fas fa-question-circle me-2"></i> Form Completion Guide
+                    </h6>
+                </div>
+                <div class="help-body">
+                    <p class="mb-3">All fields marked with * are required. Please ensure accuracy of information.</p>
+                    <ul class="help-list ps-3">
+                        <li><strong>Color Name:</strong> Full name of the color</li>
+                        <li><strong>DTEX:</strong> Fiber thickness measurement</li>
+                        <li><strong>Color Number:</strong> Internal SKU or reference code</li>
+                        <li><strong>Rack No:</strong> Physical storage location</li>
+                        <li><strong>Stock (kg):</strong> Quantity available in stock</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Form section -->
+        <div class="col-lg-8 mb-4">
+            <div class="card form-card h-100">
+                <div class="form-header">
+                    <h5 class="form-title">
+                        <i class="fas fa-palette me-2"></i> Add New Color Record
+                    </h5>
+                </div>
+                <div class="form-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="field-group">
+                                    <label for="{{ form.color_name.id_for_label }}" class="form-label">
+                                        <i class="fas fa-palette form-icon"></i> Color Name *
+                                    </label>
+                                    {{ form.color_name }}
+                                    {% if form.color_name.errors %}
+                                        <div class="error-message d-block">
+                                            <i class="fas fa-exclamation-circle"></i>
+                                            {% for error in form.color_name.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="field-group">
+                                    <label for="{{ form.color_dtex.id_for_label }}" class="form-label">
+                                        <i class="fas fa-weight form-icon"></i> DTEX *
+                                    </label>
+                                    {{ form.color_dtex }}
+                                    {% if form.color_dtex.errors %}
+                                        <div class="error-message d-block">
+                                            <i class="fas fa-exclamation-circle"></i>
+                                            {% for error in form.color_dtex.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="field-group">
+                                    <label for="{{ form.color_number.id_for_label }}" class="form-label">
+                                        <i class="fas fa-barcode form-icon"></i> Color Number *
+                                    </label>
+                                    {{ form.color_number }}
+                                    {% if form.color_number.errors %}
+                                        <div class="error-message d-block">
+                                            <i class="fas fa-exclamation-circle"></i>
+                                            {% for error in form.color_number.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="field-group">
+                                    <label for="{{ form.rack_no.id_for_label }}" class="form-label">
+                                        <i class="fas fa-layer-group form-icon"></i> Rack No *
+                                    </label>
+                                    {{ form.rack_no }}
+                                    {% if form.rack_no.errors %}
+                                        <div class="error-message d-block">
+                                            <i class="fas fa-exclamation-circle"></i>
+                                            {% for error in form.rack_no.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="field-group">
+                                    <label for="{{ form.stock_kg.id_for_label }}" class="form-label">
+                                        <i class="fas fa-boxes form-icon"></i> Stock (kg) *
+                                    </label>
+                                    {{ form.stock_kg }}
+                                    {% if form.stock_kg.errors %}
+                                        <div class="error-message d-block">
+                                            <i class="fas fa-exclamation-circle"></i>
+                                            {% for error in form.stock_kg.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-4">
+                                <div class="d-flex gap-3 justify-content-end">
+                                    <a href="{% url 'color_list' %}" class="btn btn-secondary">
+                                        <i class="fas fa-arrow-left me-2"></i> Cancel
+                                    </a>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-2"></i> Save Record
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,392 @@
+{% extends 'home.html' %}
+{% block title %}Item Details{% endblock %}
+{% block page_title %}<i class="fas fa-box-open me-2"></i> Item Details{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Item Profile Card -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-gradient text-white py-4">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3">
+                            {% if item.label_image %}
+                            <p class="rounded-circle border" style="width: 60px; height: 60px; object-fit: cover;"></p>
+                            {% else %}
+                            <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center"
+                                style="width: 60px; height: 60px;">
+                                <i class="fas fa-image" style="font-size: 24px;"></i>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <h2 class="mb-1 text-dark text-capitalize">{{ item.label_name|default:"Item Details" }}</h2>
+                            <p class="mb-0 opacity-75 text-dark">Item ID: {{ item.id }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Image Section -->
+                <div class="card-body p-0">
+                    <div class="text-center mb-4">
+                        {% if item.label_image %}
+                        <img src="{{ item.label_image.url }}" alt="{{ item.label_name }}"
+                            class="img-fluid rounded shadow-sm" style="max-height: 400px; object-fit: contain;">
+                        {% else %}
+                        <div class="p-5 bg-light rounded">
+                            <i class="fas fa-image fa-4x text-muted mb-3"></i>
+                            <p class="text-muted mb-0">No image available for this item</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="card-body p-4">
+                    {% if item %}
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-tag text-primary me-3"></i>
+                                    <div>
+                                        <small class="text-muted">Label Name</small>
+                                        <div>{{ item.label_name }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-barcode text-primary me-3"></i>
+                                    <div>
+                                        <small class="text-muted">Code</small>
+                                        <div>{{ item.code }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-user text-primary me-3"></i>
+                                    <div>
+                                        <small class="text-muted">Customer</small>
+                                        <div>{{ item.customer }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-calendar-alt text-primary me-3"></i>
+                                    <div>
+                                        <small class="text-muted">Date</small>
+                                        <div>{{ item.date|date:"F d, Y" }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-cogs text-primary me-3"></i>
+                                    <div>
+                                        <small class="text-muted">Machine</small>
+                                        <div>{{ item.machine }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-weight text-primary me-3"></i>
+                                    <div>
+                                        <small class="text-muted">Density</small>
+                                        <div>{{ item.density }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-ruler-horizontal text-primary me-3"></i>
+                                    <div>
+                                        <small class="text-muted">Dimensions</small>
+                                        <div>{{ item.width }}mm × {{ item.length }}mm</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-columns text-primary me-3"></i>
+                                    <div>
+                                        <small class="text-muted">Columns</small>
+                                        <div>{{ item.column_count }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-palette text-primary me-3"></i>
+                                    <div>
+                                        <small class="text-muted">Colors</small>
+                                        <div>{{ item.column_count }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-file-alt text-primary me-3"></i>
+                                    <div>
+                                        <small class="text-muted">Fold Method</small>
+                                        <div>{{ item.get_fold_method_display }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-mouse-pointer text-primary me-3"></i>
+                                    <div>
+                                        <small class="text-muted">Pick</small>
+                                        <div>{{ item.pick }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Colors Section -->
+                    <div class="mt-5">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h4 class="mb-0"><i class="fas fa-palette me-2"></i>Colors Used</h4>
+                        </div>
+
+                        {% if colors %}
+                        <div class="row g-3 d-flex flex-column">
+                            {% for color in colors %}
+                            <div class="col-md-4">
+                                <div class="p-3 bg-light rounded d-flex align-items-center">
+                                    <i class="fas fa-circle text-primary me-3"></i>
+                                    <div>{{ color }}</div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="alert alert-light text-center py-5 mb-0">
+                            <i class="fas fa-palette fa-2x text-muted mb-3"></i>
+                            <p class="mb-0">No color information available for this item.</p>
+                        </div>
+                        {% endif %}
+                        
+                    </div>
+                    <!-- Orders Section -->
+                    <div class="mt-5">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h4 class="mb-0"><i class="fas fa-shopping-bag me-2"></i>Related Orders</h4>
+                            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#orderModal">
+                                <i class="fas fa-eye me-2"></i>View All Orders
+                            </button>
+                        </div>
+
+                        <!-- Recent Orders Table -->
+                        <div class="table-responsive">
+                            <table class="table align-middle table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Date</th>
+                                        <th>Customer</th>
+                                        <th>Status</th>
+                                        <th class="text-end">Quantity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if odr %}
+                                    {% for order in odr %}
+                                    <tr>
+                                        <td>#{{ order.id }}</td>
+                                        <td>{{ order.date|date:"M d, Y" }}</td>
+                                        <td>{{ order.customer_data.name }}</td>
+                                        <td>
+                                            <span class="badge rounded-pill 
+                                                    {% if order.status == 'pending' %}bg-warning text-dark
+                                                    {% elif order.status == 'processing' %}bg-info
+                                                    {% elif order.status == 'shipped' %}bg-primary
+                                                    {% elif order.status == 'delivered' %}bg-success
+                                                    {% elif order.status == 'cancelled' %}bg-danger
+                                                    {% else %}bg-secondary{% endif %}">
+                                                {{ order.status|default:"Not set"|title }}
+                                            </span>
+                                        </td>
+                                        <td class="text-end">{{ order.quantity }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted py-5">
+                                            <i class="fas fa-box-open fa-2x mb-2"></i>
+                                            <p class="mb-0">No orders found for this item</p>
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex gap-3 mt-4">
+                        <a href="{% url 'item_edit' item.id %}" class="btn btn-primary flex-grow-1">
+                            <i class="fas fa-edit me-2"></i>Edit Item
+                        </a>
+                        <a href="{% url 'item_list' %}" class="btn btn-outline-secondary flex-grow-1">
+                            <i class="fas fa-arrow-left me-2"></i>Back to List
+                        </a>
+                    </div>
+
+                    <!-- Order Details Modal -->
+                    <div class="modal fade" id="orderModal" tabindex="-1" aria-labelledby="orderModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                            <div class="modal-content border-0 shadow-lg">
+                                <div class="modal-header bg-light">
+                                    <h5 class="modal-title" id="orderModalLabel">
+                                        <i class="fas fa-shopping-bag me-2"></i>Order Details for {{ item.label_name }}
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Order ID</th>
+                                                    <th>Date</th>
+                                                    <th>Customer</th>
+                                                    <th>Quantity</th>
+                                                    <th>Status</th>
+                                                    <th>Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% if odr %}
+                                                {% for order in odr %}
+                                                <tr>
+                                                    <td>#{{ order.id }}</td>
+                                                    <td>{{ order.date|date:"M d, Y"|default:"-" }}</td>
+                                                    <td>{{ order.customer_data.name }}</td>
+                                                    <td>{{ order.quantity }}</td>
+                                                    <td>
+                                                        <span class="badge rounded-pill 
+                                                                {% if order.status == 'pending' %}bg-warning text-dark
+                                                                {% elif order.status == 'processing' %}bg-info
+                                                                {% elif order.status == 'shipped' %}bg-primary
+                                                                {% elif order.status == 'delivered' %}bg-success
+                                                                {% elif order.status == 'cancelled' %}bg-danger
+                                                                {% else %}bg-secondary{% endif %}">
+                                                            {{ order.status|default:"Not set"|title }}
+                                                        </span>
+                                                    </td>
+                                                    <td>${{ item.price|default:0 }} × {{ order.quantity }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                                {% else %}
+                                                <tr>
+                                                    <td colspan="6" class="text-center text-muted py-5">
+                                                        <i class="fas fa-box-open fa-2x mb-2"></i>
+                                                        <p class="mb-0">No orders found for this item</p>
+                                                    </td>
+                                                </tr>
+                                                {% endif %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                        <i class="fas fa-times me-2"></i>Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% else %}
+                    <!-- Item Not Found Alert -->
+                    <div class="alert alert-danger d-flex align-items-center" role="alert">
+                        <i class="fas fa-exclamation-triangle me-3" style="font-size: 1.5rem;"></i>
+                        <div>
+                            <h4 class="alert-heading">Item Not Found</h4>
+                            <p>The requested item does not exist or has been removed from the system.</p>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <a href="{% url 'item_list' %}" class="btn btn-primary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Item List
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-gradient {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    }
+
+    .table thead th {
+        background-color: #f1f3f5;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(13, 110, 253, 0.05);
+    }
+
+    .badge {
+        font-weight: 500;
+        padding: 0.5em 0.75em;
+        font-size: 0.85rem;
+    }
+
+    .modal-content {
+        border-radius: 15px;
+    }
+
+    .modal-header {
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .modal-footer {
+        border-top: 1px solid #e9ecef;
+    }
+</style>
+{% endblock %}
