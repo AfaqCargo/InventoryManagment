@@ -49,7 +49,7 @@ urlpatterns = [
     path('validate-field/', views.validate_field, name='validate_field'),
 
 
-    path('collect-static/', views.collect_static, name="collect"),
-    path('run-migrations/', views.run_migrations, name='run_migrations'),
+    # path('collect-static/', views.collect_static, name="collect"),
+    # path('run-migrations/', views.run_migrations, name='run_migrations'),
     
 ]
