@@ -884,24 +884,24 @@ def color_detail(request, pk):
     })
 
 
-def run_migrations(request):
-    try:
-        call_command('migrate', '--noinput')
-        return HttpResponse("✅ Migrations applied successfully.")
-    except Exception as e:
-        return HttpResponse(f"❌ Error: {str(e)}")
+# def run_migrations(request):
+#     try:
+#         call_command('migrate', '--noinput')
+#         return HttpResponse("✅ Migrations applied successfully.")
+#     except Exception as e:
+#         return HttpResponse(f"❌ Error: {str(e)}")
 
-def collect_static(request):
-    try:
-        call_command('collectstatic', '--noinput')
-        return HttpResponse("✅ Static files collected.")
-    except Exception as e:
-        return HttpResponse(f"❌ Error: {str(e)}")
+# def collect_static(request):
+#     try:
+#         call_command('collectstatic', '--noinput')
+#         return HttpResponse("✅ Static files collected.")
+#     except Exception as e:
+#         return HttpResponse(f"❌ Error: {str(e)}")
 
 
-def create_superuser(request):
-    try:
-        User.objects.create_superuser('admin', 'admin@example.com', 'password123')
-        return HttpResponse("✅ Admin user created.")
-    except Exception as e:
-        return HttpResponse(f"❌ Error: {str(e)}")
+# def create_superuser(request):
+#     try:
+#         User.objects.create_superuser('admin', 'admin@example.com', 'password123')
+#         return HttpResponse("✅ Admin user created.")
+#     except Exception as e:
+#         return HttpResponse(f"❌ Error: {str(e)}")
