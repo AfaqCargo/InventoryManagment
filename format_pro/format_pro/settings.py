@@ -77,20 +77,28 @@ WSGI_APPLICATION = 'format_pro.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+
+import dj_database_url
+
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'formatdb',  # Database name
-        'USER': 'root',        # Database user
-        'PASSWORD': '', # Database password
-        'HOST': 'localhost',    # Database host
-        'PORT': '3306',         # Database port (default for MySQL)
-        'OPTIONS': {
-            'charset': 'utf8mb4',
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
-        }
-    }
+    'default': dj_database_url.config(default=os.environ['DATABASE_URL'])
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'formatdb',  # Database name
+#         'USER': 'root',        # Database user
+#         'PASSWORD': '', # Database password
+#         'HOST': 'localhost',    # Database host
+#         'PORT': '3306',         # Database port (default for MySQL)
+#         'OPTIONS': {
+#             'charset': 'utf8mb4',
+#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+#         }
+#     }
+# }
 
 
 # Password validation
