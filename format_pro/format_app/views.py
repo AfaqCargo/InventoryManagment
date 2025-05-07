@@ -18,6 +18,8 @@ import random
 from django.views import View
 from django.db import transaction
 from decimal import Decimal, getcontext
+from django.core.management import call_command
+from django.contrib.auth.models import User
 
 # Home/Dashboard view
 def home(request):
