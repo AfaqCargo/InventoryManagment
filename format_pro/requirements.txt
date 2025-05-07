@@ -1,9 +1,11 @@
-﻿asgiref==3.8.1
-gunicorn
+asgiref==3.8.1
+backports.zoneinfo==0.2.1
+dj-database-url==2.3.0
 Django==4.2.20
 pillow==10.4.0
+psycopg==3.2.7
+psycopg-binary==3.2.7
 PyMySQL==1.1.1
 sqlparse==0.5.3
 typing-extensions==4.12.2
 tzdata==2025.1
-dj-database-url==2.3.0
